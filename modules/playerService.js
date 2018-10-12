@@ -5,6 +5,7 @@
 require("utilities");
 require("privateDataService");
 require("publicDataService");
+require("passwordRecoveryService");
  
 // Load GameSparks API
 var api = Spark.getGameDataService();
@@ -24,15 +25,22 @@ var playerService = {
          var playerDocId = playerId;
          var privateDataDocId = utilities.generateNewId();
          var publicDataDocId = utilities.generateNewId();
+         var passwordRecoveryDocId = utilities.generateNewId();
          
          var playerDoc = api.createItem("Player", playerDocId);
          var playerData = playerDoc.getData();
          playerData.privateDataId = privateDataDocId;
          playerData.publicDataId = publicDataDocId;
+         playerData.passwordRecoveryId = passwordRecoveryDocId;
          utilities.saveItem(playerDoc, playerData);
          
+         // Create private and public data documents
          privateDataService.createPrivateData(username, privateDataDocId);
          publicDataService.createPublicData(displayName, publicDataDocId);
+         
+         // Get the email address from the players segment data and set it inside our custom database
+         var email = player.getSegmentValue("email");
+         passwordRecoveryService.createPasswordRecovery(email, playerId, passwordRecoveryDocId);
      },
      
      /**
