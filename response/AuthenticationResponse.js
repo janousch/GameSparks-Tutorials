@@ -5,8 +5,8 @@ var player = Spark.getPlayer();
 
 if (player) {
     var playerId = player.getPlayerId();
-    
-    // Create a new player entry if the player doesn't exist. This is used for the guest login!
+
+    // Create a new player entry if the player doesn't exist
     if (!playerService.doesPlayerExist(playerId)) {
         playerService.createPlayer(player);
     }
